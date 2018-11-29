@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: 'maven_push.gradle'
 
 buildscript {
-
     repositories {
         maven {
             url 'https://maven.google.com/'
@@ -15,10 +14,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
@@ -55,6 +50,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     provided 'com.taobao.android:weex_sdk:0.16.0'
-
-    compile 'com.lakala.appcomponent:RetrofitManager:1.0.0'
+    compile 'com.lakala.appcomponent:RetrofitManager:1.0.1'
 }

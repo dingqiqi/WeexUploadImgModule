@@ -19,7 +19,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 
 /**
  * 获取联系人打电话
@@ -46,6 +50,7 @@ public class UploadImgModule extends WXModule implements IUploadImgModule {
         String path = null;
         String uploadUrl = null;
         String type = null;
+        String fileKey = null;
         try {
             jsonObject = new JSONObject(params);
 
@@ -78,7 +83,7 @@ public class UploadImgModule extends WXModule implements IUploadImgModule {
 
             path = jsonObject.getString("imagePath");
             uploadUrl = jsonObject.getString("uploadUrl");
-
+            fileKey = jsonObject.getString("fileKey");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -102,8 +107,19 @@ public class UploadImgModule extends WXModule implements IUploadImgModule {
             path = str[1];
         }
 
+        if (RetrofitManager.getInstance().getRetrofit() == null) {
+            OkHttpClient okHttpClient = RetrofitManager.initOkHttpClient(20000, null, new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+            RetrofitManager.initRetrofit("http://10.7.111.164:8662/", okHttpClient);
+        }
+
         PostFormFileBuilder builder = RetrofitManager.postFile()
                 .url(uploadUrl)
+                .fileKey(fileKey)
                 .addFile(new File(path))
                 .params(mapParams)
                 .heads(headParams);
